@@ -39,11 +39,13 @@ This study will use the following packages to answer the questions above.
   * RColorBrewer, to make wave rose diagrams
   
 4. Compare wave heights between two hurricanes:
-  * plotly, to create a time series line plot
+  * ggplot, to create a time series line plot
 
 
 # Import Data Sets
+## Install Packages
 ```{r, message=F, warning=F}
+library(ggplot2)
 library(rnoaa)
 library(ncdf4)
 library(leaflet)
@@ -60,6 +62,7 @@ leaflet(data = na.omit(allbuoystations)) %>%
 
 ## NOAA St. John Station Map
 ```{r}
+library(tidyverse)
 stjohnbuoy <- filter(allbuoystations, station==41052)
 head(stjohnbuoy)
 leaflet(data = na.omit(stjohnbuoy)) %>%
@@ -79,7 +82,6 @@ head(st_john_data)
 
 ```{r}
 library(sf)
-library(tidyverse)
 library(ggmap)
 library(rnoaa)
 library(spData)
@@ -109,9 +111,7 @@ swdi(dataset='warn', startdate = '19950601', enddate = '19951101', station = '41
 
 ```{r}
 head(st_john_data)
-install.packages("ggplot2")
 library(ggplot2)
-install.packages("RColorBrewer")
 library(RColorBrewer)
 
 plot.windrose <- function(data,
@@ -225,7 +225,7 @@ plot.windrose <- function(data,
     scale_x_discrete(drop = FALSE,
                      labels = waiver()) +
     coord_polar(start = -((dirres/2)/360) * 2*pi) +
-    scale_fill_manual(name = "Wind Speed (m/s)", 
+    scale_fill_manual(name = "Wave Height (m)", 
                       values = spd.colors,
                       drop = FALSE) +
     #theme_bw() +
@@ -245,9 +245,29 @@ plot.windrose <- function(data,
   # return the handle to the wind rose
   return(p.windrose)
 }
+View(st_john_data)
+p1 <- plot.windrose(data= st_john_data[["data"]], spd = "wave_height",
+                   dir = "mean_wave_dir", debug = 1)
+p1
 
-p1 <- plot.windrose(st_john_data, spd = st_john_data$wave_height,
-                   dir = st_john_data$mean_wave_dir)
+data=st_john_data[["data"]]
+
+data%>%
+  mutate(dir=mean_wave_dir,width=22.5)%>%
+  ggplot(aes(x = dir)) +
+    geom_bar()+
+  scale_x_continuous(breaks=c(90,180,270,360))+
+    coord_polar(theta = "x",direction = 1,start=11.25/180*pi) 
+
+    scale_x_discrete(drop = FALSE,
+                     labels = waiver()) +
+    scale_fill_manual(name = "Wave Height (m)", 
+                      values = spd.colors,
+                      drop = FALSE) +
+    #theme_bw() +
+    theme(axis.title.x = element_blank(),
+          #panel.border = element_rect(colour = "blank"),
+          panel.grid.major = element_line(colour="grey65"))
 
 ```
 
