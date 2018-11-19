@@ -10,7 +10,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Introduction
+# Introduction 
 
 ## Problem / Question
 What was the difference in wave heights before during and after hurricanes Irma and Maria passed St. John, USVI in 2017? What was the difference between the wave height between the two hurricanes. 
@@ -60,7 +60,7 @@ leaflet(data = na.omit(allbuoystations)) %>%
   leaflet::addCircles(~lon, ~lat, opacity = 0.5)
 ```
 
-## NOAA St. John Station Map
+## NOAA St. John Station Map 
 ```{r}
 library(tidyverse)
 stjohnbuoy <- filter(allbuoystations, station==41052)
@@ -274,7 +274,7 @@ data%>%
 ### Wave rose diagram of each hurricane's peak wave dates
 ### Wave rose diagram of week after each hurricane
 
-## Time Series Line Plot of Hurricane Wave Height Differences
+## Time Series Line Plot of Hurricane Wave Height Differences 
 
 ```{r}
 st_john_df <- (st_john_data$data)
